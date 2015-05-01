@@ -998,11 +998,19 @@ function fbconnect_node_build_alter($build) {
  * Theme function for Facebook connect/login button.
  */
 function theme_fbconnect_login_button($variables) {
+  global $user;
   $op = $variables['op'];
   $user_profile = $variables['user_profile'];
   $text = $variables['text'];
   $attr = $variables['attr'];
-  if ($op == 'login') {
+
+  //If user is logged in then in that case no need to show the login link again in the block
+  if (isset($user->uid) && $user->uid != 0) {
+    $title = t('Hello %name', array('%name' => $user_profile['name']));
+    $desc = t('You have successfully logged in using your Facebook credentials.');
+    return '<h3>' . $title . '</h3>' . $desc;
+  }
+  else if ($op == 'login') {
     $url = url('fbconnect/register/create');
     $title = t('Hello %name', array('%name' => $user_profile['name']));
     $desc = t('Login to this site using your Facebook credentials.');
